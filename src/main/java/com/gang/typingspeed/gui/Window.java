@@ -11,7 +11,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 
@@ -24,13 +23,17 @@ public class Window extends JFrame {
     private final JTextArea givenTextArea = new JTextArea();
     private final JTextArea typingTextArea = new JTextArea();
 
-    private final JButton typingCount = new JButton();
-    private final JButton typingTime = new JButton();
-    private final JButton typingSpeed = new JButton();
-    private final JButton placeHolder = new JButton();
+    private final JButton typingCountButton = new JButton();
+    private final JButton typingTimeButton = new JButton();
+    private final JButton typingSpeedButton = new JButton();
+    private final JButton freshButton = new JButton();
 
     private Color backgroundColor = Color.WHITE;
     private Color textAreaBackgroundColor = Color.WHITE;
+
+    private String typingText = "";
+    private boolean timerStart = false;
+    private long startTime;
 
     public Window(String title) throws HeadlessException {
         super(title);
@@ -52,34 +55,36 @@ public class Window extends JFrame {
 
         statsPanel.setBackground(Color.WHITE);
         statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10)); // 水平排列，带间距
-        statsPanel.add(typingCount);
-        statsPanel.add(typingTime);
-        statsPanel.add(typingSpeed);
-        statsPanel.add(placeHolder);
+        statsPanel.add(typingCountButton);
+        statsPanel.add(typingTimeButton);
+        statsPanel.add(typingSpeedButton);
+        statsPanel.add(freshButton);
 
         add(innerPanel);
     }
 
     private void initButtons() {
-        typingCount.setText("字符数：");
-        typingCount.setBackground(Color.WHITE); // 模仿手绘图的空白感
-        typingCount.setPreferredSize(new Dimension(80, 40));
+        typingCountButton.setText("字数：");
+        typingCountButton.setBackground(Color.WHITE); // 模仿手绘图的空白感
+        typingCountButton.setPreferredSize(new Dimension(200, 40));
 
-        typingTime.setText("总用时：");
-        typingTime.setBackground(Color.WHITE); // 模仿手绘图的空白感
-        typingTime.setPreferredSize(new Dimension(80, 40));
+        typingTimeButton.setText("用时：");
+        typingTimeButton.setBackground(Color.WHITE); // 模仿手绘图的空白感
+        typingTimeButton.setPreferredSize(new Dimension(200, 40));
 
-        typingSpeed.setText("速度：");
-        typingSpeed.setBackground(Color.WHITE); // 模仿手绘图的空白感
-        typingSpeed.setPreferredSize(new Dimension(80, 40));
+        typingSpeedButton.setText("速度：");
+        typingSpeedButton.setBackground(Color.WHITE); // 模仿手绘图的空白感
+        typingSpeedButton.setPreferredSize(new Dimension(200, 40));
 
-        placeHolder.setText("占位：");
-        placeHolder.setBackground(Color.WHITE); // 模仿手绘图的空白感
-        placeHolder.setPreferredSize(new Dimension(80, 40));
+        freshButton.setText("刷新");
+        freshButton.setBackground(Color.WHITE); // 模仿手绘图的空白感
+        freshButton.setPreferredSize(new Dimension(200, 40));
+        freshButton.addActionListener(e -> freshGivenText());
     }
 
     private void initTypingTextArea() {
         typingTextArea.setEditable(true);
+        typingTextArea.setLineWrap(true);
         typingTextArea.setBackground(textAreaBackgroundColor);
         typingTextArea.setAlignmentX(Component.CENTER_ALIGNMENT);
         typingTextArea.setFont(new Font("宋体", Font.BOLD, 20));
@@ -90,6 +95,7 @@ public class Window extends JFrame {
 
     private void initGivenTextArea() {
         givenTextArea.setEditable(false);
+        givenTextArea.setLineWrap(true);
         givenTextArea.setBackground(textAreaBackgroundColor);
         givenTextArea.setAlignmentX(Component.CENTER_ALIGNMENT); // 居中对齐
         givenTextArea.setFont(new Font("宋体", Font.BOLD, 20));
@@ -98,10 +104,47 @@ public class Window extends JFrame {
         givenTextArea.setText("This is a typing speed test example");
     }
 
-    @Override
-    public void update(Graphics g) {
-        while (true) {
-
+    public void fresh() {
+        typingText = typingTextArea.getText();
+        if (!timerStart) {
+            if (typingText != null && !typingText.isEmpty()) {
+                startTime = System.currentTimeMillis();
+                timerStart = true;
+            } else {
+                return;
+            }
         }
+        int charNums = maxCommonPrefixLength(givenTextArea.getText(), typingText);
+        long timeCost = System.currentTimeMillis() - startTime;
+        double timeCostInMinute = (double) timeCost / 1000 / 60;
+        typingCountButton.setText("字数：" + charNums);
+        typingTimeButton.setText("用时：" + timeCost / 1000 + " s");
+        if (timeCostInMinute > 0) {
+            typingSpeedButton.setText("速度：" + (int)(charNums / timeCostInMinute) + " /m");
+        }
+    }
+
+    private int maxCommonPrefixLength(String given, String typing) {
+        int i = 0;
+        int tl = typing.length();
+        while (i < tl) {
+            try {
+                if (given.charAt(i) != typing.charAt(i)) {
+                    return i;
+                }
+            } catch (IndexOutOfBoundsException exception) {
+                return i;
+            }
+            i++;
+        }
+        return i;
+    }
+
+    private void freshGivenText() {
+        givenTextArea.setText("刷新啦！！！！！！！！！！");
+        typingTextArea.setText("");
+        timerStart = false;
+        startTime = 0;
+        initButtons();
     }
 }

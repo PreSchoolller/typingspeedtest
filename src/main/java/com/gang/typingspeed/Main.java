@@ -10,5 +10,13 @@ public class Main {
         window.setSize(1280, 720);
         window.setLocation(640, 360);
         window.setVisible(true);
+
+        while (true) {
+            if (window.isActive()) {
+                window.fresh();
+            } else {
+                Thread.yield();
+            }
+        }
     }
 }
