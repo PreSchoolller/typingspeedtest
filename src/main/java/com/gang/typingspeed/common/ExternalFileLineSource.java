@@ -32,26 +32,18 @@ public class ExternalFileLineSource implements LineSource {
     @Override
     public String getRandomLine() {
         int lineNumber = new Random(System.currentTimeMillis()).nextInt(0, lines.size());
-        return getLine(lineNumber);
+        return getLine(lineNumber + 1);
     }
 
     @Override
     public String getLine(int lineNumber) {
         String str;
         try {
-            externalFile.seek(lines.get(lineNumber));
+            externalFile.seek(lines.get(lineNumber - 1));
             str = externalFile.readLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        if (str == null || str.isEmpty()) {
-            return getRandomLine();
-        }
         return str;
-    }
-
-    public static void main(String[] args) {
-        String randomLine = new ExternalFileLineSource().getRandomLine();
-        System.out.println(randomLine);
     }
 }

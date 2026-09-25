@@ -9,7 +9,7 @@ public class GenerateText {
     private final LineSource lineSource;
 
     public GenerateText() {
-        File extraFile = new File("/text-source.txt");
+        File extraFile = new File("text-source.txt");
         if (extraFile.exists()) {
             lineSource = new ExternalFileLineSource();
         } else {
@@ -18,6 +18,10 @@ public class GenerateText {
     }
 
     public String generate() {
-        return lineSource.getRandomLine();
+        String randomLine = lineSource.getRandomLine();
+        while (randomLine.isBlank()) {
+            randomLine = lineSource.getRandomLine();
+        }
+        return randomLine;
     }
 }
