@@ -1,0 +1,23 @@
+package com.gang.typingspeed.common;
+
+import com.gang.typingspeed.common.interfaces.LineSource;
+
+import java.io.File;
+
+public class GenerateText {
+
+    private final LineSource lineSource;
+
+    public GenerateText() {
+        File extraFile = new File("/text-source.txt");
+        if (extraFile.exists()) {
+            lineSource = new ExternalFileLineSource();
+        } else {
+            lineSource = new ClassPathLineResource();
+        }
+    }
+
+    public String generate() {
+        return lineSource.getRandomLine();
+    }
+}

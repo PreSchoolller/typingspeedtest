@@ -1,5 +1,7 @@
 package com.gang.typingspeed.gui;
 
+import com.gang.typingspeed.common.GenerateText;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +34,7 @@ public class Window extends JFrame {
     private Color textAreaBackgroundColor = Color.WHITE;
 
     private String typingText = "";
+    private static String DEFAULT_GIVEN_TEXT = "This is a typing speed test example";
     private boolean timerStart = false;
     private long startTime;
 
@@ -101,7 +104,7 @@ public class Window extends JFrame {
         givenTextArea.setFont(new Font("宋体", Font.BOLD, 20));
         givenTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80)); // 限制高度
         givenTextArea.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // 黑色边框
-        givenTextArea.setText("This is a typing speed test example");
+        givenTextArea.setText(DEFAULT_GIVEN_TEXT);
     }
 
     public void fresh() {
@@ -141,7 +144,11 @@ public class Window extends JFrame {
     }
 
     private void freshGivenText() {
-        givenTextArea.setText("刷新啦！！！！！！！！！！");
+        String givenText = new GenerateText().generate();
+        if (givenText.isEmpty()) {
+            givenText = DEFAULT_GIVEN_TEXT;
+        }
+        givenTextArea.setText(givenText);
         typingTextArea.setText("");
         timerStart = false;
         startTime = 0;
