@@ -79,8 +79,8 @@ public class Window extends JFrame {
     }
 
     private void initTypingTextArea() {
-        givenTextArea.setEditable(true);
-        givenTextArea.setBackground(textAreaBackgroundColor);
+        typingTextArea.setEditable(true);
+        typingTextArea.setBackground(textAreaBackgroundColor);
         typingTextArea.setAlignmentX(Component.CENTER_ALIGNMENT);
         typingTextArea.setFont(new Font("宋体", Font.BOLD, 20));
         typingTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
