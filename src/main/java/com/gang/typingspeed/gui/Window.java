@@ -50,7 +50,7 @@ public class Window extends JFrame {
         innerPanel.setBackground(Color.WHITE);
         innerPanel.setBackground(backgroundColor);
         innerPanel.setLayout(new BorderLayout(10, 10)); // 垂直布局
-        innerPanel.setBorder(BorderFactory.createTitledBorder("内层窗口")); // 给面板加个边框和标题
+        innerPanel.setBorder(BorderFactory.createTitledBorder("Attention is all you need")); // 给面板加个边框和标题
         innerPanel.add(textPanel, BorderLayout.CENTER);
         innerPanel.add(statsPanel, BorderLayout.SOUTH);
 
