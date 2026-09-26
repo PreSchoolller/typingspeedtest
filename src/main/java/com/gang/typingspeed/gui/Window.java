@@ -30,6 +30,8 @@ public class Window extends JFrame {
     private final JButton typingSpeedButton = new JButton();
     private final JButton freshButton = new JButton();
 
+    private final GenerateText textGenerator = new GenerateText();
+
     private Color backgroundColor = Color.WHITE;
     private Color textAreaBackgroundColor = Color.WHITE;
 
@@ -63,6 +65,8 @@ public class Window extends JFrame {
         statsPanel.add(typingSpeedButton);
         statsPanel.add(freshButton);
 
+        freshButton.addActionListener(e -> freshGivenText());
+
         add(innerPanel);
     }
 
@@ -82,7 +86,6 @@ public class Window extends JFrame {
         freshButton.setText("刷新");
         freshButton.setBackground(Color.WHITE); // 模仿手绘图的空白感
         freshButton.setPreferredSize(new Dimension(200, 40));
-        freshButton.addActionListener(e -> freshGivenText());
     }
 
     private void initTypingTextArea() {
@@ -144,7 +147,7 @@ public class Window extends JFrame {
     }
 
     private void freshGivenText() {
-        String givenText = new GenerateText().generate();
+        String givenText = textGenerator.generate();
         if (givenText.isEmpty()) {
             givenText = DEFAULT_GIVEN_TEXT;
         }

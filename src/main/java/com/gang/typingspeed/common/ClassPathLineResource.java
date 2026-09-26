@@ -11,6 +11,7 @@ import java.util.Random;
 public class ClassPathLineResource implements LineSource {
 
     private List<String> lines;
+    private Integer lastRandomLine;
 
     public ClassPathLineResource() {
         String data;
@@ -32,12 +33,24 @@ public class ClassPathLineResource implements LineSource {
 
     @Override
     public String getRandomLine() {
-        int lineNumber = new Random(System.currentTimeMillis()).nextInt(0, lines.size());
+        int lineNumber = new Random(System.currentTimeMillis()).nextInt(0, lines.size()) + 1;
+        lastRandomLine = lineNumber;
         return getLine(lineNumber);
     }
 
     @Override
+    public String getRandomLine(int offset) {
+        if (lastRandomLine == null) {
+            return getRandomLine();
+        }
+        if (lastRandomLine + offset >= 1 && lastRandomLine + offset < lines.size() + 1) {
+            return getLine(lastRandomLine + offset);
+        }
+        return getLine(1);
+    }
+
+    @Override
     public String getLine(int lineNumber) {
-        return lines.get(lineNumber);
+        return lines.get(lineNumber - 1);
     }
 }

@@ -19,8 +19,11 @@ public class GenerateText {
 
     public String generate() {
         String randomLine = lineSource.getRandomLine();
+        int offset = -1;
         while (randomLine.isBlank()) {
             randomLine = lineSource.getRandomLine();
+            randomLine = lineSource.getRandomLine(offset);
+            offset--;
         }
         return randomLine;
     }
