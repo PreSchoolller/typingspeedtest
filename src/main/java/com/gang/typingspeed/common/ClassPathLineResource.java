@@ -4,6 +4,7 @@ import com.gang.typingspeed.common.interfaces.LineSource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +21,7 @@ public class ClassPathLineResource implements LineSource {
             data = "";
             try {
                 if (textStream != null) {
-                    data = new String(textStream.readAllBytes());
+                    data = new String(textStream.readAllBytes(), StandardCharsets.UTF_8);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

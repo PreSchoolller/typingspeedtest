@@ -4,6 +4,7 @@ import com.gang.typingspeed.common.interfaces.LineSource;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -54,6 +55,7 @@ public class ExternalFileLineSource implements LineSource {
         try {
             externalFile.seek(lines.get(lineNumber - 1));
             str = externalFile.readLine();
+            str = new String(str.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

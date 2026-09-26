@@ -11,6 +11,7 @@ public class GenerateText {
     public GenerateText() {
         File extraFile = new File("text-source.txt");
         if (extraFile.exists()) {
+            System.out.println("External source file detected, loading...");
             lineSource = new ExternalFileLineSource();
         } else {
             lineSource = new ClassPathLineResource();
@@ -21,7 +22,6 @@ public class GenerateText {
         String randomLine = lineSource.getRandomLine();
         int offset = -1;
         while (randomLine.isBlank()) {
-            randomLine = lineSource.getRandomLine();
             randomLine = lineSource.getRandomLine(offset);
             offset--;
         }
