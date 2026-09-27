@@ -5,8 +5,10 @@ import com.gang.typingspeed.common.GenerateText;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -15,6 +17,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class Window extends JFrame {
 
@@ -38,7 +42,9 @@ public class Window extends JFrame {
     private String typingText = "";
     private static String DEFAULT_GIVEN_TEXT = "This is a typing speed test example";
     private boolean timerStart = false;
+    private boolean timerShouldStop = false;
     private long startTime;
+    private final Timer timer = new Timer(100, e -> fresh());
 
     public Window(String title) throws HeadlessException {
         super(title);
@@ -97,6 +103,28 @@ public class Window extends JFrame {
         typingTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
         typingTextArea.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         typingTextArea.setToolTipText("typing here to start test");
+        typingTextArea.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (timerShouldStop) {
+                    timer.stop();
+                    timerShouldStop = false;
+                    timerStart = false;
+                } else {
+                    timer.start();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
     }
 
     private void initGivenTextArea() {
@@ -125,8 +153,15 @@ public class Window extends JFrame {
         double timeCostInMinute = (double) timeCost / 1000 / 60;
         typingCountButton.setText("字数：" + charNums);
         typingTimeButton.setText("用时：" + timeCost / 1000 + " s");
+        int speed = (int) (charNums / timeCostInMinute);
         if (timeCostInMinute > 0) {
-            typingSpeedButton.setText("速度：" + (int)(charNums / timeCostInMinute) + " /m");
+            typingSpeedButton.setText("速度：" + speed + " /m");
+        }
+        if (givenTextArea.getText().length() == charNums) {
+            timerShouldStop = true;
+            JOptionPane.showMessageDialog(this, "用时：" + (timeCost / 1000) + "s 速度：" + speed + " c/s");
+            typingTextArea.setText("");
+            timer.stop();
         }
     }
 
