@@ -1,4 +1,4 @@
-package com.gang.typingspeed.common.interfaces;
+package io.github.preschoolller.typingspeed.common.interfaces;
 
 public interface LineSource {
     String getRandomLine();

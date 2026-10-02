@@ -1,6 +1,6 @@
-package com.gang.typingspeed.gui;
+package io.github.preschoolller.typingspeed.gui;
 
-import com.gang.typingspeed.common.GenerateText;
+import io.github.preschoolller.typingspeed.common.GenerateText;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;

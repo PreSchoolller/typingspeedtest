@@ -1,6 +1,6 @@
-package com.gang.typingspeed;
+package io.github.preschoolller.typingspeed;
 
-import com.gang.typingspeed.gui.Window;
+import io.github.preschoolller.typingspeed.gui.Window;
 
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;

@@ -1,4 +1,4 @@
-package com.gang.typingspeed.common;
+package io.github.preschoolller.typingspeed.common;
 
 import org.junit.jupiter.api.Test;
 

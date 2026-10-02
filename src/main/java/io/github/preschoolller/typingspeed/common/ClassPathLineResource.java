@@ -1,6 +1,6 @@
-package com.gang.typingspeed.common;
+package io.github.preschoolller.typingspeed.common;
 
-import com.gang.typingspeed.common.interfaces.LineSource;
+import io.github.preschoolller.typingspeed.common.interfaces.LineSource;
 
 import java.io.IOException;
 import java.io.InputStream;
