@@ -5,7 +5,6 @@ import io.github.preschoolller.typingspeed.common.GenerateText;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.Timer;
@@ -26,12 +25,12 @@ public class Window extends JFrame {
     private JPanel textPanel = new JPanel(new GridLayout(2, 1, 10, 10));
     private JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-    private final JTextArea givenTextArea = new JTextArea();
-    private final JTextArea typingTextArea = new JTextArea();
+    final JTextArea givenTextArea = new JTextArea();
+    final JTextArea typingTextArea = new JTextArea();
 
-    private final JButton typingCountButton = new JButton();
-    private final JButton typingTimeButton = new JButton();
-    private final JButton typingSpeedButton = new JButton();
+    final JButton typingCountButton = new JButton();
+    final JButton typingTimeButton = new JButton();
+    final JButton typingSpeedButton = new JButton();
     private final JButton freshButton = new JButton();
 
     private final GenerateText textGenerator = new GenerateText();
@@ -39,12 +38,13 @@ public class Window extends JFrame {
     private Color backgroundColor = Color.WHITE;
     private Color textAreaBackgroundColor = Color.WHITE;
 
-    private String typingText = "";
+    String typingText = "";
     private static String DEFAULT_GIVEN_TEXT = "This is a typing speed test example";
-    private boolean timerStart = false;
-    private boolean timerShouldStop = false;
-    private long startTime;
-    private final Timer timer = new Timer(100, e -> fresh());
+    boolean timerStart = false;
+    boolean timerShouldStop = false;
+    long startTime;
+    private final Logic logic = new Logic();
+    final Timer timer = new Timer(100, e -> logic.fresh(this));
 
     public Window(String title) throws HeadlessException {
         super(title);
@@ -136,49 +136,6 @@ public class Window extends JFrame {
         givenTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80)); // 限制高度
         givenTextArea.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // 黑色边框
         givenTextArea.setText(DEFAULT_GIVEN_TEXT);
-    }
-
-    public void fresh() {
-        typingText = typingTextArea.getText();
-        if (!timerStart) {
-            if (typingText != null && !typingText.isEmpty()) {
-                startTime = System.currentTimeMillis();
-                timerStart = true;
-            } else {
-                return;
-            }
-        }
-        int charNums = maxCommonPrefixLength(givenTextArea.getText(), typingText);
-        long timeCost = System.currentTimeMillis() - startTime;
-        double timeCostInMinute = (double) timeCost / 1000 / 60;
-        typingCountButton.setText("字数：" + charNums);
-        typingTimeButton.setText("用时：" + timeCost / 1000 + " s");
-        int speed = (int) (charNums / timeCostInMinute);
-        if (timeCostInMinute > 0) {
-            typingSpeedButton.setText("速度：" + speed + " /m");
-        }
-        if (givenTextArea.getText().length() == charNums) {
-            timerShouldStop = true;
-            JOptionPane.showMessageDialog(this, "用时：" + (timeCost / 1000) + "s 速度：" + speed + " c/s");
-            typingTextArea.setText("");
-            timer.stop();
-        }
-    }
-
-    private int maxCommonPrefixLength(String given, String typing) {
-        int i = 0;
-        int tl = typing.length();
-        while (i < tl) {
-            try {
-                if (given.charAt(i) != typing.charAt(i)) {
-                    return i;
-                }
-            } catch (IndexOutOfBoundsException exception) {
-                return i;
-            }
-            i++;
-        }
-        return i;
     }
 
     private void freshGivenText() {
