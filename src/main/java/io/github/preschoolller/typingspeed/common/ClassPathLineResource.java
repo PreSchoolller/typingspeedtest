@@ -30,7 +30,7 @@ public class ClassPathLineResource implements LineSource {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        lines = List.of(data.split("\n"));
+        lines = List.of(data.split("\\R"));
     }
 
     @Override

@@ -7,7 +7,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -38,13 +37,8 @@ public class Window extends JFrame {
     private Color backgroundColor = Color.WHITE;
     private Color textAreaBackgroundColor = Color.WHITE;
 
-    String typingText = "";
     private static String DEFAULT_GIVEN_TEXT = "This is a typing speed test example";
-    boolean timerStart = false;
-    boolean timerShouldStop = false;
-    long startTime;
-    private final Logic logic = new Logic();
-    final Timer timer = new Timer(100, e -> logic.fresh(this));
+    private final Logic logic = new Logic(this);
 
     public Window(String title) throws HeadlessException {
         super(title);
@@ -106,13 +100,7 @@ public class Window extends JFrame {
         typingTextArea.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (timerShouldStop) {
-                    timer.stop();
-                    timerShouldStop = false;
-                    timerStart = false;
-                } else {
-                    timer.start();
-                }
+                logic.timerControl();
             }
 
             @Override
@@ -145,8 +133,7 @@ public class Window extends JFrame {
         }
         givenTextArea.setText(givenText);
         typingTextArea.setText("");
-        timerStart = false;
-        startTime = 0;
+        logic.stopTimer();
         initButtons();
     }
 }
