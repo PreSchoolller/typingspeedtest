@@ -13,6 +13,7 @@ public class ClassPathLineResource implements LineSource {
 
     private List<String> lines;
     private Integer lastRandomLine;
+    private final Random random = new Random(System.currentTimeMillis());
 
     public ClassPathLineResource() {
         String data;
@@ -34,7 +35,7 @@ public class ClassPathLineResource implements LineSource {
 
     @Override
     public String getRandomLine() {
-        int lineNumber = new Random(System.currentTimeMillis()).nextInt(0, lines.size()) + 1;
+        int lineNumber = random.nextInt(0, lines.size()) + 1;
         lastRandomLine = lineNumber;
         return getLine(lineNumber);
     }

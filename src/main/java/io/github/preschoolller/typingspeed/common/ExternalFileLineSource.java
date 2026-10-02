@@ -11,12 +11,13 @@ import java.util.Random;
 
 public class ExternalFileLineSource implements LineSource {
 
-    private List<Long> lines;
-    private RandomAccessFile externalFile;
+    private final List<Long> lines;
+    private final RandomAccessFile externalFile;
     private Integer lastRandomLine;
+    private final Random random = new Random(System.currentTimeMillis());
 
     public ExternalFileLineSource() {
-        lines = new ArrayList<Long>();
+        lines = new ArrayList<>();
         try {
             externalFile = new RandomAccessFile("text-source.txt", "r");
             while (true) {
@@ -33,7 +34,7 @@ public class ExternalFileLineSource implements LineSource {
 
     @Override
     public String getRandomLine() {
-        int lineNumber = new Random(System.currentTimeMillis()).nextInt(0, lines.size()) + 1;
+        int lineNumber = random.nextInt(0, lines.size()) + 1;
         lastRandomLine = lineNumber;
         return getLine(lineNumber);
     }
