@@ -2,9 +2,11 @@ package io.github.preschoolller.typingspeed.gui;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 import java.awt.Color;
 
 public class Logic {
@@ -13,20 +15,28 @@ public class Logic {
     boolean timerShouldStop = false;
     long startTime;
     String typingText = "";
+    int lastCharNum;
 
     final Window window;
     final Timer timer;
-    final Highlighter.HighlightPainter TYPED_RIGHT = new DefaultHighlighter.DefaultHighlightPainter(new Color(0, 128, 0));
-    final Highlighter.HighlightPainter TYPED_RIGHT_NEXT = new DefaultHighlighter.DefaultHighlightPainter(new Color(254, 242, 3));
+    final StyledDocument styledDocument;
+    final SimpleAttributeSet TYPED_RIGHT = new SimpleAttributeSet();
+    final SimpleAttributeSet TYPED_RIGHT_NEXT = new SimpleAttributeSet();
+    final Style BASE_STYLE;
 
     public Logic(Window window) {
         this.window = window;
-        this.timer = new Timer(100, e -> fresh());
+        timer = new Timer(100, e -> fresh());
+        styledDocument = window.givenTextArea.getStyledDocument();
+        StyleConstants.setForeground(TYPED_RIGHT, new Color(0, 128, 0));
+        StyleConstants.setForeground(TYPED_RIGHT_NEXT, new Color(219, 205, 0));
+
+        BASE_STYLE = styledDocument.getStyle(StyleContext.DEFAULT_STYLE);
     }
 
     public void fresh() {
-        window.givenTextArea.getHighlighter().removeAllHighlights();
         typingText = window.typingTextArea.getText();
+        String givenTextAreaText = window.givenTextArea.getText();
         if (!timerStart) {
             if (typingText != null && !typingText.isEmpty()) {
                 startTime = System.currentTimeMillis();
@@ -35,14 +45,7 @@ public class Logic {
                 return;
             }
         }
-        int charNums = maxCommonPrefixLength(window.givenTextArea.getText(), typingText);
-        try {
-            window.givenTextArea
-                    .getHighlighter()
-                    .addHighlight(0, charNums, TYPED_RIGHT);
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
-        }
+        int charNums = maxCommonPrefixLength(givenTextAreaText, typingText);
         long timeCost = System.currentTimeMillis() - startTime;
         double timeCostInMinute = (double) timeCost / 1000 / 60;
         window.typingCountButton.setText("字数：" + charNums);
@@ -51,18 +54,21 @@ public class Logic {
         if (timeCostInMinute > 0) {
             window.typingSpeedButton.setText("速度：" + speed + " c/m");
         }
-        if (window.givenTextArea.getText().length() == charNums) {
+        if (lastCharNum == charNums) {
+            return;
+        }
+        lastCharNum = charNums;
+        window.givenTextArea.setText(givenTextAreaText);
+        styledDocument.setCharacterAttributes(0, charNums, TYPED_RIGHT, false);
+        if (givenTextAreaText.length() == charNums) {
             timerShouldStop = true;
             JOptionPane.showMessageDialog(window, "用时：" + (timeCost / 1000) + "s 速度：" + speed + " c/m");
             window.typingTextArea.setText("");
-            window.givenTextArea.getHighlighter().removeAllHighlights();
+            styledDocument.setCharacterAttributes(0, charNums, BASE_STYLE, true);
             timer.stop();
+            return;
         }
-        try {
-            window.givenTextArea.getHighlighter().addHighlight(charNums, charNums + 1, TYPED_RIGHT_NEXT);
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
-        }
+        styledDocument.setCharacterAttributes(charNums, 1, TYPED_RIGHT_NEXT, false);
     }
 
     private int maxCommonPrefixLength(String given, String typing) {

@@ -7,6 +7,11 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -24,8 +29,8 @@ public class Window extends JFrame {
     private JPanel textPanel = new JPanel(new GridLayout(2, 1, 10, 10));
     private JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-    final JTextArea givenTextArea = new JTextArea();
-    final JTextArea typingTextArea = new JTextArea();
+    final JTextPane givenTextArea = new JTextPane();
+    final JTextPane typingTextArea = new JTextPane();
 
     final JButton typingCountButton = new JButton();
     final JButton typingTimeButton = new JButton();
@@ -90,7 +95,6 @@ public class Window extends JFrame {
 
     private void initTypingTextArea() {
         typingTextArea.setEditable(true);
-        typingTextArea.setLineWrap(true);
         typingTextArea.setBackground(textAreaBackgroundColor);
         typingTextArea.setAlignmentX(Component.CENTER_ALIGNMENT);
         typingTextArea.setFont(new Font("宋体", Font.BOLD, 20));
@@ -116,11 +120,15 @@ public class Window extends JFrame {
     }
 
     private void initGivenTextArea() {
+        StyledDocument doc = givenTextArea.getStyledDocument();
+        Style defaultStyle = doc.getStyle(StyleContext.DEFAULT_STYLE);
+        StyleConstants.setFontFamily(defaultStyle, "宋体");
+        StyleConstants.setFontSize(defaultStyle, 20);
+        StyleConstants.setBold(defaultStyle, true);
+
         givenTextArea.setEditable(false);
-        givenTextArea.setLineWrap(true);
         givenTextArea.setBackground(textAreaBackgroundColor);
         givenTextArea.setAlignmentX(Component.CENTER_ALIGNMENT); // 居中对齐
-        givenTextArea.setFont(new Font("宋体", Font.BOLD, 20));
         givenTextArea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80)); // 限制高度
         givenTextArea.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // 黑色边框
         givenTextArea.setText(DEFAULT_GIVEN_TEXT);
