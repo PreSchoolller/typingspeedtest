@@ -2,6 +2,10 @@ package io.github.preschoolller.typingspeed.gui;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
+import java.awt.Color;
 
 public class Logic {
 
@@ -12,6 +16,8 @@ public class Logic {
 
     final Window window;
     final Timer timer;
+    final Highlighter.HighlightPainter TYPED_RIGHT = new DefaultHighlighter.DefaultHighlightPainter(new Color(0, 128, 0));
+    final Highlighter.HighlightPainter TYPED_RIGHT_NEXT = new DefaultHighlighter.DefaultHighlightPainter(new Color(254, 242, 3));
 
     public Logic(Window window) {
         this.window = window;
@@ -19,6 +25,7 @@ public class Logic {
     }
 
     public void fresh() {
+        window.givenTextArea.getHighlighter().removeAllHighlights();
         typingText = window.typingTextArea.getText();
         if (!timerStart) {
             if (typingText != null && !typingText.isEmpty()) {
@@ -29,6 +36,13 @@ public class Logic {
             }
         }
         int charNums = maxCommonPrefixLength(window.givenTextArea.getText(), typingText);
+        try {
+            window.givenTextArea
+                    .getHighlighter()
+                    .addHighlight(0, charNums, TYPED_RIGHT);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
         long timeCost = System.currentTimeMillis() - startTime;
         double timeCostInMinute = (double) timeCost / 1000 / 60;
         window.typingCountButton.setText("字数：" + charNums);
@@ -41,7 +55,13 @@ public class Logic {
             timerShouldStop = true;
             JOptionPane.showMessageDialog(window, "用时：" + (timeCost / 1000) + "s 速度：" + speed + " c/m");
             window.typingTextArea.setText("");
+            window.givenTextArea.getHighlighter().removeAllHighlights();
             timer.stop();
+        }
+        try {
+            window.givenTextArea.getHighlighter().addHighlight(charNums, charNums + 1, TYPED_RIGHT_NEXT);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
         }
     }
 
