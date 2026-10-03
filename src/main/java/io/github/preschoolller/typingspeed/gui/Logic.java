@@ -66,6 +66,7 @@ public class Logic {
             window.typingTextArea.setText("");
             styledDocument.setCharacterAttributes(0, charNums, BASE_STYLE, true);
             timer.stop();
+            lastCharNum = -1;
             return;
         }
         styledDocument.setCharacterAttributes(charNums, 1, TYPED_RIGHT_NEXT, false);
@@ -85,9 +86,8 @@ public class Logic {
 
     void timerControl() {
         if (timerShouldStop) {
-            timer.stop();
             timerShouldStop = false;
-            timerStart = false;
+            stopTimer();
         } else {
             timer.start();
         }
@@ -96,6 +96,7 @@ public class Logic {
     void stopTimer() {
         timerStart = false;
         startTime = 0;
+        lastCharNum = -1;
         timer.stop();
     }
 }
